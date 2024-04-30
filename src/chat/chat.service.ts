@@ -1,10 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Chat, ChatDocument } from 'schemas/chat.schema';
 import { Message } from 'schemas/message.schema';
 import { User } from 'schemas/user.schema';
+import { FileUploadService } from 'src/file-upload/file-upload.service';
+import { GroqService } from 'src/groq/groq.service';
 import { UsersService } from 'src/users/users.service';
+import { performOcrRecognition } from 'src/utils/ocrRecognition';
 import { Roles } from 'types/roles';
 
 @Injectable()
@@ -14,12 +21,14 @@ export class ChatService {
     @InjectModel(Message.name) private messageModel: Model<Message>,
     @InjectModel(User.name) private userModel: Model<User>,
     private usersService: UsersService,
+    private groqService: GroqService,
+    private fileUploadService: FileUploadService,
   ) {}
 
   async findOne(id: string): Promise<ChatDocument | undefined> {
     const chat = await this.chatModel
       .findById(id)
-      .populate('messages', '', this.messageModel)
+      .populate('messages', 'role content', this.messageModel)
       .exec();
 
     if (!chat) {
@@ -27,6 +36,28 @@ export class ChatService {
     }
 
     return chat;
+  }
+
+  async uploadFile(chatId: string, file: Express.Multer.File) {
+    const chat = await this.findOne(chatId);
+
+    await this.fileUploadService.uploadFile(file);
+
+    chat.fileUrl = process.env.COS_CDN_URL + file.originalname;
+    const fileContent = await performOcrRecognition(chat.fileUrl);
+
+    const removedLineSpacing = fileContent.split('\n');
+    let trimmedString = '';
+
+    removedLineSpacing.forEach((removedLine: string) => {
+      trimmedString += removedLine.replace('\r', '') + ' ';
+    });
+
+    chat.fileContent = trimmedString;
+
+    await chat.save();
+
+    return chat.fileUrl;
   }
 
   async getAllUserChats(id: string): Promise<Chat[]> {
@@ -63,6 +94,40 @@ export class ChatService {
     chat.messages.push(createdMessage);
     await chat.save();
 
-    return createdMessage;
+    const populatedChat = (await this.findOne(chat._id.toString())).toJSON();
+
+    const createdMessageObject = {
+      role: createdMessage.role,
+      content: createdMessage.content,
+    };
+
+    const popuplatedChatMessages = [];
+
+    populatedChat.messages.forEach((message: Message) => {
+      popuplatedChatMessages.push({
+        content: message.content,
+        role: message.role,
+      });
+    });
+
+    const message = await this.groqService.getGroqChatCompletion(
+      popuplatedChatMessages,
+      createdMessageObject,
+      populatedChat.fileContent,
+    );
+
+    const messageContent = message && message.content;
+
+    if (typeof messageContent == 'string' && messageContent.length > 0) {
+      const assistantMessage = new this.messageModel({
+        content: messageContent,
+        role: Roles.ASSISTANT,
+      });
+      await assistantMessage.save();
+
+      return assistantMessage;
+    }
+
+    throw new BadRequestException("AI didn't respond. Please try again");
   }
 }

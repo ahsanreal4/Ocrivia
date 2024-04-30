@@ -15,6 +15,12 @@ export class Chat {
     default: [],
   })
   messages: Message[];
+
+  @Prop({ required: false })
+  fileUrl: string;
+
+  @Prop({ required: false })
+  fileContent: string;
 }
 
 export const ChatSchema = SchemaFactory.createForClass(Chat);

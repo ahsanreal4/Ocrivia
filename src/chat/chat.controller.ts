@@ -7,10 +7,14 @@ import {
   HttpStatus,
   Get,
   Param,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { ChatService } from './chat.service';
 import { Chat, ChatDocument } from 'schemas/chat.schema';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(AuthGuard)
 @Controller('chat')
@@ -33,6 +37,19 @@ export class ChatController {
   ) {
     const { chatId, content } = writeUserMessageDto;
     return await this.chatService.writeUserMessage(chatId, content);
+  }
+
+  @HttpCode(HttpStatus.CREATED)
+  @Post('/:id/file')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id') id: string,
+  ) {
+    if (!file) throw new BadRequestException('No file uploaded');
+    if (!id) throw new BadRequestException('Chat id was not provided');
+
+    this.chatService.uploadFile(id, file);
   }
 
   @HttpCode(HttpStatus.OK)

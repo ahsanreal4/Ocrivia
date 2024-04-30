@@ -6,6 +6,8 @@ import { Chat, ChatSchema } from 'schemas/chat.schema';
 import { UsersModule } from 'src/users/users.module';
 import { Message, MessageSchema } from 'schemas/message.schema';
 import { User, UserSchema } from 'schemas/user.schema';
+import { GroqModule } from 'src/groq/groq.module';
+import { FileUploadModule } from 'src/file-upload/file-upload.module';
 
 @Module({
   imports: [
@@ -13,6 +15,8 @@ import { User, UserSchema } from 'schemas/user.schema';
     MongooseModule.forFeature([{ name: Message.name, schema: MessageSchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     UsersModule,
+    GroqModule,
+    FileUploadModule,
   ],
   providers: [ChatService],
   controllers: [ChatController],
