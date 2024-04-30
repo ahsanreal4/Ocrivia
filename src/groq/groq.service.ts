@@ -9,7 +9,7 @@ export class GroqService {
 
   constructor() {
     this.groq = new Groq({
-      apiKey: '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',
+      apiKey: process.env.GROQ_API_KEY,
     });
   }
 
