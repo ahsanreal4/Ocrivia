@@ -26,7 +26,7 @@ export class GroqService {
           {
             role: Roles.SYSTEM,
             content:
-              'You are an AI assitant that will parse W2 form for its users using OCR technology and then provide relative information from the form to the user. Hide only social security number. The file content is in the next message',
+              'You are an AI assitant that will parse W2 form for its users and then provide relative information from the form to the user. Hide only social security number. The file content is in the next message',
           },
           {
             role: Roles.SYSTEM,

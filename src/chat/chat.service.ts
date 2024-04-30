@@ -125,6 +125,9 @@ export class ChatService {
       });
       await assistantMessage.save();
 
+      chat.messages.push(assistantMessage);
+      await chat.save();
+
       return assistantMessage;
     }
 
