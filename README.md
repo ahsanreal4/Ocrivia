@@ -6,7 +6,7 @@ Node version => 18.19.0
 
 ## Open source packages used
 
-GroqCloud - https://console.groq.com/docs/examples
+GroqCloud - https://console.groq.com
 
 ## Installation
 
@@ -27,17 +27,4 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
