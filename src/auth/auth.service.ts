@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 import { hashSha256 } from 'src/utils/hashing';
 import { SignUpRequestDto } from './dto/request.dto';
-import { UserDocument } from 'schemas/user.schema';
+import { UserDocument } from 'src/schemas/user.schema';
 import { SignUpResponseDto } from './dto/response.dto';
 
 @Injectable()

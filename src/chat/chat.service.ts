@@ -5,14 +5,14 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Chat, ChatDocument } from 'schemas/chat.schema';
-import { Message } from 'schemas/message.schema';
-import { User } from 'schemas/user.schema';
+import { Chat, ChatDocument } from 'src/schemas/chat.schema';
+import { Message } from 'src/schemas/message.schema';
+import { User } from 'src/schemas/user.schema';
 import { FileUploadService } from 'src/file-upload/file-upload.service';
 import { GroqService } from 'src/groq/groq.service';
 import { UsersService } from 'src/users/users.service';
 import { performOcrRecognition } from 'src/utils/ocrRecognition';
-import { Roles } from 'types/roles';
+import { Roles } from 'src/types/roles';
 
 @Injectable()
 export class ChatService {

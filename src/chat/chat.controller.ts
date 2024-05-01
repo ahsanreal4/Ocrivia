@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { ChatService } from './chat.service';
-import { Chat, ChatDocument } from 'schemas/chat.schema';
+import { Chat, ChatDocument } from 'src/schemas/chat.schema';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(AuthGuard)
