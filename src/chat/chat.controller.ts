@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { ChatService } from './chat.service';
@@ -49,13 +50,19 @@ export class ChatController {
     if (!file) throw new BadRequestException('No file uploaded');
     if (!id) throw new BadRequestException('Chat id was not provided');
 
-    this.chatService.uploadFile(id, file);
+    return this.chatService.uploadFile(id, file);
   }
 
   @HttpCode(HttpStatus.OK)
   @Get('/:id')
   async getChatById(@Param('id') id: string): Promise<ChatDocument> {
     return await this.chatService.findOne(id);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Delete('/:id')
+  async deleteChatById(@Param('id') id: string): Promise<void> {
+    await this.chatService.deleteOne(id);
   }
 
   @HttpCode(HttpStatus.OK)

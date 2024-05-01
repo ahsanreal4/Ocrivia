@@ -38,6 +38,11 @@ export class ChatService {
     return chat;
   }
 
+  async deleteOne(id: string): Promise<void> {
+    const chat = await this.chatModel.findOneAndDelete({ _id: id }).exec();
+    await this.messageModel.deleteMany({ _id: { $in: chat.messages } });
+  }
+
   async uploadFile(chatId: string, file: Express.Multer.File) {
     const chat = await this.findOne(chatId);
 
@@ -57,14 +62,14 @@ export class ChatService {
 
     await chat.save();
 
-    return chat.fileUrl;
+    return trimmedString;
   }
 
   async getAllUserChats(id: string): Promise<Chat[]> {
     try {
       const user = await this.userModel
         .findById(id)
-        .populate('chats', 'name', this.chatModel)
+        .populate('chats', 'name fileUrl fileContent', this.chatModel)
         .exec();
 
       return user.chats;
