@@ -4,10 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from 'src/schemas/user.schema';
+import { User, UserDocument } from '../schemas/user.schema';
 import { Model } from 'mongoose';
-import { SignUpRequestDto } from 'src/auth/dto/request.dto';
-import { SignUpResponseDto } from 'src/auth/dto/response.dto';
+import { SignUpRequestDto } from '../auth/dto/request.dto';
+import { SignUpResponseDto } from '../auth/dto/response.dto';
 
 @Injectable()
 export class UsersService {

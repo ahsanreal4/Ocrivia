@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { ChatController } from './chat.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Chat, ChatSchema } from 'src/schemas/chat.schema';
-import { UsersModule } from 'src/users/users.module';
-import { Message, MessageSchema } from 'src/schemas/message.schema';
-import { User, UserSchema } from 'src/schemas/user.schema';
-import { GroqModule } from 'src/groq/groq.module';
-import { FileUploadModule } from 'src/file-upload/file-upload.module';
+import { Chat, ChatSchema } from '../schemas/chat.schema';
+import { UsersModule } from '../users/users.module';
+import { Message, MessageSchema } from '../schemas/message.schema';
+import { User, UserSchema } from '../schemas/user.schema';
+import { GroqModule } from '../groq/groq.module';
+import { FileUploadModule } from '../file-upload/file-upload.module';
 
 @Module({
   imports: [

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Message } from 'src/schemas/message.schema';
-import { Roles } from 'src/types/roles';
+import { Message } from '../schemas/message.schema';
+import { Roles } from '../types/roles';
 const Groq = require('groq-sdk');
 
 @Injectable()
