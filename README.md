@@ -1,5 +1,9 @@
 ## Description
 
+The backend is built on Nest JS with mongo atlas (mongoose). For security JWT token is used.
+For OCR recognition free external api is used.
+OCR Space Api - https://ocr.space/ocrapi
+
 Node version => 18.19.0
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
@@ -7,6 +11,13 @@ Node version => 18.19.0
 ## Open source packages used
 
 GroqCloud - https://console.groq.com
+
+## Sample Data
+
+Use this account for samples
+
+email: ahsan.btph123@gmail.com
+password: AhsanAzeem
 
 ## Installation
 
