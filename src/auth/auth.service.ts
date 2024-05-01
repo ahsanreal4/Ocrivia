@@ -33,14 +33,19 @@ export class AuthService {
 
   async signUp(
     signUpDto: SignUpRequestDto,
-  ): Promise<SignUpResponseDto | undefined> {
+  ): Promise<{ access_token: string } | undefined> {
     const hashedPassword = hashSha256(signUpDto.password, 32);
 
-    return await this.usersService.signUp({
+    const userInfo = await this.usersService.signUp({
       email: signUpDto.email,
       name: signUpDto.name,
       password: hashedPassword,
     });
+
+    const payload = { sub: userInfo.email };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
   }
 
   async getUserProfile(email: string): Promise<SignUpResponseDto | undefined> {
