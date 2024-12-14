@@ -20,21 +20,23 @@ export class GroqService {
   ) {
     const MODEL = 'mixtral-8x7b-32768';
 
+    const systemMessages = [
+      {
+        role: Roles.SYSTEM,
+        content:
+          'You are an AI assitant that will parse W2 form for its users and then provide relative information from the form to the user. Hide only social security number. The file content is in the next message. If there is not file content ask user to upload a file.',
+      },
+    ];
+
+    if (typeof fileContent == 'string' && fileContent.length > 0)
+      systemMessages.push({
+        role: Roles.SYSTEM,
+        content: fileContent,
+      });
+
     try {
       const response = await this.groq.chat.completions.create({
-        messages: [
-          {
-            role: Roles.SYSTEM,
-            content:
-              'You are an AI assitant that will parse W2 form for its users and then provide relative information from the form to the user. Hide only social security number. The file content is in the next message',
-          },
-          {
-            role: Roles.SYSTEM,
-            content: fileContent,
-          },
-          ...messages,
-          newMessage,
-        ],
+        messages: [...systemMessages, ...messages, newMessage],
         model: MODEL,
       });
 

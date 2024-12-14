@@ -29,6 +29,7 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/mongoose": "^10.0.6",
     "@nestjs/platform-express": "^10.0.0",
+    "cloudinary": "^2.5.1",
     "groq-sdk": "^0.3.3",
     "mongoose": "^8.3.3",
     "ocr-space-api-wrapper": "^2.3.0",

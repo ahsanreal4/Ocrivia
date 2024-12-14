@@ -40,15 +40,20 @@ export class ChatService {
 
   async deleteOne(id: string): Promise<void> {
     const chat = await this.chatModel.findOneAndDelete({ _id: id }).exec();
+    if (chat.fileId) await this.fileUploadService.deleteFile(chat.fileId);
     await this.messageModel.deleteMany({ _id: { $in: chat.messages } });
   }
 
   async uploadFile(chatId: string, file: Express.Multer.File) {
     const chat = await this.findOne(chatId);
 
-    await this.fileUploadService.uploadFile(file);
+    const fileName = file.originalname;
 
-    chat.fileUrl = process.env.COS_CDN_URL + file.originalname;
+    const result = await this.fileUploadService.uploadFile(file, fileName);
+
+    chat.fileUrl = result.secure_url;
+    chat.fileId = result.public_id;
+
     const fileContent = await performOcrRecognition(chat.fileUrl);
 
     const removedLineSpacing = fileContent.split('\n');
@@ -62,7 +67,7 @@ export class ChatService {
 
     await chat.save();
 
-    return trimmedString;
+    return { content: trimmedString, url: chat.fileUrl };
   }
 
   async getAllUserChats(id: string): Promise<Chat[]> {
@@ -82,6 +87,15 @@ export class ChatService {
     const user = await this.usersService.findOneById(userId);
 
     const createdChat = new this.chatModel({ name });
+    await createdChat.save();
+
+    const createdMessage = new this.messageModel({
+      content: 'Hey, how can I help you today?',
+      role: Roles.ASSISTANT,
+    });
+    await createdMessage.save();
+
+    createdChat.messages.push(createdMessage);
     await createdChat.save();
 
     user.chats.push(createdChat);

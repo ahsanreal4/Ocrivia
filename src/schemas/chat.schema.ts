@@ -17,6 +17,9 @@ export class Chat {
   messages: Message[];
 
   @Prop({ required: false })
+  fileId: string;
+
+  @Prop({ required: false })
   fileUrl: string;
 
   @Prop({ required: false })
